@@ -4,10 +4,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import one.digitalinnovation.parking.exception.ParkingNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-//import one.digitalinnovation.parking.exception.ParkingNotFoundException;
 import one.digitalinnovation.parking.model.Parking;
 import one.digitalinnovation.parking.repository.ParkingRepository;
 
@@ -26,9 +26,9 @@ public class ParkingService {
     }
 
     @Transactional(readOnly = true)
-    public Parking findById(String id) throws Exception {
-        return parkingRepository.findById(id).orElseThrow(() -> new Exception(id));
-                //.orElseThrow(() -> new ParkingNotFoundException(id));
+    public Parking findById(String id) {
+        return parkingRepository.findById(id)
+                .orElseThrow(() -> new ParkingNotFoundException(id));
     }
 
     @Transactional
@@ -41,13 +41,13 @@ public class ParkingService {
     }
 
     @Transactional
-    public void delete(String id) throws Exception {
+    public void delete(String id) {
         findById(id);
         parkingRepository.deleteById(id);
     }
 
     @Transactional
-    public Parking update(String id, Parking parkingCreate) throws Exception {
+    public Parking update(String id, Parking parkingCreate) {
         Parking parking = findById(id);
         parking.setColor(parkingCreate.getColor());
         parking.setState(parkingCreate.getState());
@@ -58,7 +58,7 @@ public class ParkingService {
     }
 
     @Transactional
-    public Parking checkOut(String id) throws Exception {
+    public Parking checkOut(String id) {
         Parking parking = findById(id);
         parking.setExitDate(LocalDateTime.now());
         //parking.setBill(ParkingCheckOut.getBill(parking));
